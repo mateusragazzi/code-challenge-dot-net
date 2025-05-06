@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using QuaveChallenge.API.Services;
+using System.Threading.Tasks;
 
 namespace QuaveChallenge.API.Controllers
 {
@@ -6,39 +8,58 @@ namespace QuaveChallenge.API.Controllers
     [Route("api/[controller]")]
     public class EventController : ControllerBase
     {
-        [HttpGet("communities")]
-        public IActionResult GetCommunities()
+        private readonly IEventService _eventService;
+
+        public EventController(IEventService eventService)
         {
-            // TODO: Implement get communities
-            return Ok();
+            _eventService = eventService;
+        }
+
+        [HttpGet("communities")]
+        public async Task<IActionResult> GetCommunities()
+        {
+            var communities = await _eventService.GetCommunitiesAsync();
+            return Ok(communities);
         }
 
         [HttpGet("people/{communityId}")]
-        public IActionResult GetPeople(int communityId)
+        public async Task<IActionResult> GetPeople(int communityId)
         {
-            // TODO: Implement get people by community
-            return Ok();
+            var people = await _eventService.GetPeopleByEventAsync(communityId);
+            return Ok(people);
         }
 
         [HttpPost("check-in/{personId}")]
-        public IActionResult CheckIn(int personId)
+        public async Task<IActionResult> CheckIn(int personId)
         {
-            // TODO: Implement check-in
-            return Ok();
+            var person = await _eventService.CheckInPersonAsync(personId);
+            
+            if (person == null)
+                return NotFound();
+                
+            return Ok(person);
         }
 
         [HttpPost("check-out/{personId}")]
-        public IActionResult CheckOut(int personId)
+        public async Task<IActionResult> CheckOut(int personId)
         {
-            // TODO: Implement check-out
-            return Ok();
+            var person = await _eventService.CheckOutPersonAsync(personId);
+            
+            if (person == null)
+                return NotFound();
+                
+            return Ok(person);
         }
 
         [HttpGet("summary/{communityId}")]
-        public IActionResult GetSummary(int communityId)
+        public async Task<IActionResult> GetSummary(int communityId)
         {
-            // TODO: Implement get summary
-            return Ok();
+            var summary = await _eventService.GetEventSummaryAsync(communityId);
+            
+            if (summary == null)
+                return NotFound();
+                
+            return Ok(summary);
         }
     }
 } 

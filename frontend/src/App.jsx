@@ -1,13 +1,24 @@
 import React from 'react';
-import './styles/main.css';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import EventCheckInApp from './components/EventCheckInApp';
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: true,
+      staleTime: 30000
+    }
+  }
+});
 
 function App() {
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">Event Check-in System</h1>
-      {/* Add your components here */}
-    </div>
+    <QueryClientProvider client={queryClient}>
+      <div className="min-h-screen bg-gray-100">
+        <EventCheckInApp />
+      </div>
+    </QueryClientProvider>
   );
 }
 
-export default App; 
+export default App;

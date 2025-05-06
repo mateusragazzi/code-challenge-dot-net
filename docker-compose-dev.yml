@@ -4,20 +4,24 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     ports:
-      - "5000:5000"
+      - "5203:5203"
     depends_on:
       - sqlserver
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:5000
 
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile
-    working_dir: /app/frontend
+      dockerfile: Dockerfile.dev
+    working_dir: /app
     volumes:
-      - ./frontend:/app/frontend
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - WDS_SOCKET_PORT=0
+      - VITE_APP_HOST=0.0.0.0
     command: npm start
     ports:
       - "3000:3000"

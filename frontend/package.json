@@ -2,8 +2,9 @@
   "name": "quave-challenge-frontend",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
-    "start": "vite --port 3000",
+    "start": "vite --port 3000 --host",
     "build": "vite build",
     "preview": "vite preview"
   },

@@ -2,13 +2,30 @@ using Microsoft.EntityFrameworkCore;
 using QuaveChallenge.API.Data;
 using QuaveChallenge.API.Services;
 using QuaveChallenge.API.Data.Seeding;
+using System.Reflection;
+using System.IO;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+// Configure Swagger to use XML documentation
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    {
+        Title = "Quave Challenge API",
+        Version = "v1",
+        Description = "API for managing community events check-ins and check-outs"
+    });
+    
+    // Set the comments path for the Swagger JSON and UI
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath);
+});
 
 // Add DB Context
 builder.Services.AddDbContext<ApplicationDbContext>(options =>

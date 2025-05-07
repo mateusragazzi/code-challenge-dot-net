@@ -1,143 +1,81 @@
 # Quave Code Challenge
 
-Want to join Quave as a developer? 
+## Overview
 
-Great! Read this document and submit your solution.
+This project is a full-stack application composed of a **React** and an **ASP.NET Core** connected to a **SQL Server** database. The environment is containerized using Docker to streamline local development and ensure consistent setup.
 
-We hire full stack developers only, so you must be comfortable with both front-end and back-end development.
+---
 
-Good luck!
-
-> Not sure if we have open positions right now? Check our [Join repository](https://github.com/quavedev/join/issues/).
-
-# Submission
-
-## Getting Started
-
-Create a private github repository from this template and share it with us: @renanccastro @filipenevola @rafaportobraga.
-
-## Review
-
-Ready for review? Fill out this [form](https://forms.gle/m2FTwSG8bcMfhS3JA).
-
-You will provide a link to your solution repository in the form and also a cover letter. In the letter you should explain why you're a great fit and what you'll bring to Quave
-
-## Feedback
-
-We'll give you feedback based on the position description. Check the timeline section in the job posting for feedback deadlines.
-
-# Code Stack and Environment
-
-## Introduction
-
-At Quave, we use React and .NET for some clients, projects, and products.
-
-React is a popular JavaScript library for building user interfaces efficiently, while .NET provides a robust and scalable backend platform.
-
-Our stack leverages React for the frontend, providing excellent component-based architecture with reusable UI components, paired with .NET's powerful features including:
-- Authentication
-- Background Jobs
-- Entity Framework Core
-- REST APIs
-- Email Services
-- And more
-
-## Required Stack
-
-We want to see your React and .NET skills.
-
-Your solution must use:
-- Frontend: React 18
-- Backend: .NET 8 (or latest stable version)
-- Database: SQL Server or PostgreSQL
-- Styling: Tailwind CSS
-
-The solution must:
-- Use the same data structure as provided in the seed data
-- Work with `npm i && npm start` for the frontend
-- Work with standard .NET CLI commands for the backend
-- Include clear instructions for setting up the database
-- Be compatible with the latest LTS version of Node.js
-
-## Machine Setup
-
-1. Install Node.js
-   - Use [nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-2. Install [.NET SDK](https://dotnet.microsoft.com/download)
-3. Install your chosen database system
-
-## Install Dependencies
+## Project Structure
 
 ```bash
-# Frontend
-cd frontend
-npm install
-
-# Backend
-cd backend
-dotnet restore
+.
+├── backend                     
+│   ├── QuaveChallenge.API/      # ASP.NET Core API project
+│   ├── entrypoint.sh            # For waiting DB to run migrations and start app
+│   └── Dockerfile.dev           # Dockerfile for backend
+├── frontend                  
+│   ├── [...]                    # Frontend application
+│   └── Dockerfile.dev           # Dockerfile for frontend
+├── db
+│   └── init-db.sh               # Script to create a DB
+├── docker-compose-dev.yml       # Docker Compose config for development
+├── start-dev.sh                 # Script to build and run the environment
 ```
+---
 
-## Run the App
+## How to Start (Development Mode)
+
+Make sure you have **Docker** and **Docker Compose** installed.
+
+Then simply run:
 
 ```bash
-# Frontend
-cd frontend
-npm start
-
-# Backend
-cd backend
-dotnet run
+./start-dev.sh
 ```
 
-# Scope
+This script will:
 
-## Requirements
+1. Stop and remove existing containers defined in `docker-compose-dev.yml`.
+2. Rebuild all images without using the cache.
+3. Start all services in detached mode.
 
-Build a mini-app for event check-ins. The home page needs:
+After the build process finished, you can access the application opening [this link](http://localhost:3000/).
 
-1. Event selector showing event names from the `communities` table
-   - Default text: "Select an event"
+To seek available endpoints in API, please access [swagger](http://localhost:5203/swagger/index.html).
 
-2. List of registered people from the `people` table showing:
-   - Full name (first + last name)
-   - Company name
-   - Title
-   - Check-in date (MM/DD/YYYY, HH:mm or N/A)
-   - Check-out date (MM/DD/YYYY, HH:mm or N/A)
-   - "Check-in {person name}" button
-   - "Check-out {person name}" button (shows 5 seconds after check-in)
+---
 
-3. Event summary showing:
-   - Current attendee count
-   - Company breakdown of current attendees
-   - Number of people not checked in
+## Services and Ports
 
-The page should maintain an up-to-date view of the data, ensuring users see changes promptly.
+| Service     | Description                  | Port        |
+|-------------|------------------------------|-------------|
+| frontend    | React development server     | `3000`      |
+| backend     | ASP.NET Core API             | `5203`      |
+| sqlserver   | SQL Server (2019 Express)    | `1433`      |
 
-## Implementation Rules
+---
 
-1. Use:
-   - .NET for the backend API
-   - React for frontend views
-   - SQL Server or PostgreSQL for data
-   - TailwindCSS for styling
+## Backend Initialization
 
-2. App must:
-   - Have clear setup instructions in README
-   - Run frontend on port `3000`
-   - Include database migrations and seed data
-   - Include API documentation (Swagger/OpenAPI recommended)
+The backend uses `entrypoint.sh` to:
 
-# AI Tools
+1. Wait until the `mssqltools` container finishes executing database initialization via `init-db.sh`.
+2. Apply Entity Framework migrations.
+3. Launch the ASP.NET Core backend using `dotnet watch`.
 
-You can use AI tools to generate code, but you must:
-1. Understand all generated code
-2. Explain why it's the best solution
-3. Answer any related questions in the interview
+---
 
-Not understanding your code = disqualification.
+## Database
 
-# Note
+The database credentials are defined in `docker-compose-dev.yml`:
 
-We won't answer questions about this challenge to ensure fair evaluation.
+- User: `sa`
+- Password: `QuaveRoot123!`
+
+---
+
+## Notes
+
+- The frontend and backend each have their own `Dockerfile.dev` located in their respective folders.
+- The `dockersock` service is used to provide access to the host Docker socket (for scenarios where container introspection might be needed).

@@ -2,7 +2,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using QuaveChallenge.API.Models;
 using QuaveChallenge.API.Data;
+using QuaveChallenge.API.Hubs;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.SignalR;
 using System;
 
 namespace QuaveChallenge.API.Services
@@ -10,10 +12,12 @@ namespace QuaveChallenge.API.Services
     public class EventService : IEventService
     {
         private readonly ApplicationDbContext _context;
+        private readonly IHubContext<EventHub> _hubContext;
 
-        public EventService(ApplicationDbContext context)
+        public EventService(ApplicationDbContext context, IHubContext<EventHub> hubContext)
         {
             _context = context;
+            _hubContext = hubContext;
         }
 
         public async Task<IEnumerable<Community>> GetCommunitiesAsync()
@@ -40,6 +44,7 @@ namespace QuaveChallenge.API.Services
             person.CheckOutDate = null;
             
             await _context.SaveChangesAsync();
+            await _hubContext.Clients.All.SendAsync("ReceiveEventUpdate", "check-in", person.CommunityId, person.Id);
             return person;
         }
 
@@ -53,6 +58,7 @@ namespace QuaveChallenge.API.Services
             person.CheckOutDate = DateTime.UtcNow;
             
             await _context.SaveChangesAsync();
+            await _hubContext.Clients.All.SendAsync("ReceiveEventUpdate", "check-out", person.CommunityId, person.Id);
             return person;
         }
 

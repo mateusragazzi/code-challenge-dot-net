@@ -1,7 +1,9 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.SignalR;
 using QuaveChallenge.API.Data;
 using QuaveChallenge.API.Services;
 using QuaveChallenge.API.Data.Seeding;
+using QuaveChallenge.API.Hubs;
 using System.Reflection;
 using System.IO;
 
@@ -37,14 +39,21 @@ builder.Services.AddScoped<IEventService, EventService>();
 // Add Seeder
 builder.Services.AddScoped<IDataSeeder, InitialDataSeeder>();
 
+// Add SignalR
+builder.Services.AddSignalR(options => {
+    options.EnableDetailedErrors = true;
+    options.MaximumReceiveMessageSize = 102400;
+});
+
 // Add CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend",
-        builder => builder
-            .WithOrigins("http://localhost:3000")
-            .AllowAnyMethod()
-            .AllowAnyHeader());
+      builder => builder
+              .WithOrigins("http://localhost:3000")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials());
 });
 
 var app = builder.Build();
@@ -60,6 +69,7 @@ app.UseHttpsRedirection();
 app.UseCors("AllowFrontend");
 app.UseAuthorization();
 app.MapControllers();
+app.MapHub<EventHub>("/eventHub");
 
 // Seed Data
 using (var scope = app.Services.CreateScope())

@@ -15,11 +15,11 @@ function EventCheckInApp() {
       <EventSelector onSelectEvent={handleSelectEvent} />
       
       {selectedCommunityId && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-1">
+        <div className="grid grid-cols-1 lg:grid-cols-3 lg:gap-6">
+          <div className="lg:col-span-1 md:col-span-1">
             <EventSummary communityId={selectedCommunityId} />
           </div>
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2 md:col-span-1">
             <PeopleList communityId={selectedCommunityId} />
           </div>
         </div>

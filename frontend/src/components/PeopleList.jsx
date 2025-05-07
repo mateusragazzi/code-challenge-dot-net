@@ -5,7 +5,7 @@ import { formatDate } from '../utils/formatters';
 
 function PeopleList({ communityId }) {
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterOption, setFilterOption] = useState('all'); // 'all' ou 'emptyCheckIn'
+  const [filterOption, setFilterOption] = useState('all');
   const queryClient = useQueryClient();
   const { data: people, isLoading, error } = useQuery(
     ['people', communityId], 
@@ -46,8 +46,8 @@ function PeopleList({ communityId }) {
   });
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md overflow-x-auto">
-      <h3 className="text-xl font-semibold text-gray-700 mb-4">Registered Attendees</h3>
+    <div className="bg-white dark:bg-slate-950 p-6 rounded-lg shadow-md overflow-x-auto">
+      <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Registered Attendees</h3>
       
       <div className="mb-4 flex flex-col md:flex-row gap-4">
         <div className="flex-grow">
@@ -56,42 +56,42 @@ function PeopleList({ communityId }) {
             placeholder="Search by name..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full p-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200"
           />
         </div>
         <div className="md:w-64">
           <select
             value={filterOption}
             onChange={(e) => setFilterOption(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full p-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200"
           >
-            <option value="all">Show All Attendees</option>
-            <option value="emptyCheckIn">Show Only Without Check-in</option>
+            <option value="all" className="dark:bg-gray-800 dark:text-gray-200">Show All Attendees</option>
+            <option value="emptyCheckIn" className="dark:bg-gray-800 dark:text-gray-200">Show Only Without Check-in</option>
           </select>
         </div>
       </div>
       
       <table className="w-full">
         <thead>
-          <tr className="bg-gray-50">
-            <th className="py-3 px-4 text-left font-medium text-gray-700 border-b-2 border-gray-200">Name</th>
-            <th className="py-3 px-4 text-left font-medium text-gray-700 border-b-2 border-gray-200">Company</th>
-            <th className="py-3 px-4 text-left font-medium text-gray-700 border-b-2 border-gray-200">Title</th>
-            <th className="py-3 px-4 text-left font-medium text-gray-700 border-b-2 border-gray-200">Check-in Time</th>
-            <th className="py-3 px-4 text-left font-medium text-gray-700 border-b-2 border-gray-200">Check-out Time</th>
-            <th className="py-3 px-4 text-left font-medium text-gray-700 border-b-2 border-gray-200">Actions</th>
+          <tr className="bg-gray-100 dark:bg-gray-900">
+            <th className="py-3 px-4 text-left font-medium text-gray-800 dark:text-gray-200 border-b-2 border-gray-200 dark:border-gray-700">Name</th>
+            <th className="py-3 px-4 text-left font-medium text-gray-800 dark:text-gray-200 border-b-2 border-gray-200 dark:border-gray-700">Company</th>
+            <th className="py-3 px-4 text-left font-medium text-gray-800 dark:text-gray-200 border-b-2 border-gray-200 dark:border-gray-700">Title</th>
+            <th className="py-3 px-4 text-left font-medium text-gray-800 dark:text-gray-200 border-b-2 border-gray-200 dark:border-gray-700">Check-in Time</th>
+            <th className="py-3 px-4 text-left font-medium text-gray-800 dark:text-gray-200 border-b-2 border-gray-200 dark:border-gray-700">Check-out Time</th>
+            <th className="py-3 px-4 text-left font-medium text-gray-800 dark:text-gray-200 border-b-2 border-gray-200 dark:border-gray-700">Actions</th>
           </tr>
         </thead>
         <tbody>
           {filteredPeople.length > 0 ? (
             filteredPeople.map(person => (
-              <tr key={person.id} className={person.checkInDate && !person.checkOutDate ? 'bg-blue-50' : ''}>
-                <td className="py-3 px-4 border-b border-gray-200">{`${person.firstName} ${person.lastName}`}</td>
-                <td className="py-3 px-4 border-b border-gray-200">{person.companyName}</td>
-                <td className="py-3 px-4 border-b border-gray-200">{person.title}</td>
-                <td className="py-3 px-4 border-b border-gray-200">{formatDate(person.checkInDate)}</td>
-                <td className="py-3 px-4 border-b border-gray-200">{formatDate(person.checkOutDate)}</td>
-                <td className="py-3 px-4 border-b border-gray-200">
+              <tr key={person.id} className={person.checkInDate && !person.checkOutDate ? 'bg-blue-50 dark:bg-gray-900' : 'dark:bg-gray-800'}>
+                <td className="py-3 px-4 border-b border-gray-200 dark:border-gray-700 dark:text-gray-200">{`${person.firstName} ${person.lastName}`}</td>
+                <td className="py-3 px-4 border-b border-gray-200 dark:border-gray-700 dark:text-gray-200">{person.companyName}</td>
+                <td className="py-3 px-4 border-b border-gray-200 dark:border-gray-700 dark:text-gray-200">{person.title}</td>
+                <td className="py-3 px-4 border-b border-gray-200 dark:border-gray-700 dark:text-gray-200">{formatDate(person.checkInDate)}</td>
+                <td className="py-3 px-4 border-b border-gray-200 dark:border-gray-700 dark:text-gray-200">{formatDate(person.checkOutDate)}</td>
+                <td className="py-3 px-4 border-b border-gray-200 dark:border-gray-700">
                   {!person.checkInDate && (
                     <button 
                       onClick={() => checkInMutation.mutate(person.id)}
@@ -116,7 +116,7 @@ function PeopleList({ communityId }) {
             ))
           ) : (
             <tr>
-              <td colSpan="6" className="py-4 text-center text-gray-500">
+              <td colSpan="6" className="py-4 text-center text-gray-500 dark:text-gray-400">
                 {searchTerm ? `No attendees found matching "${searchTerm}"` : 'No attendees match the current filters'}
               </td>
             </tr>

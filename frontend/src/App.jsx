@@ -1,6 +1,8 @@
 import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import EventCheckInApp from './components/EventCheckInApp';
+import { ThemeProvider } from './utils/ThemeContext';
+import ThemeToggle from './components/ThemeToggle';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -14,9 +16,14 @@ const queryClient = new QueryClient({
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="min-h-screen bg-gray-100">
-        <EventCheckInApp />
-      </div>
+      <ThemeProvider>
+        <div className="min-h-screen bg-gray-100 dark:bg-gray-900 dark:text-white transition-colors duration-200">
+          <div className="container mx-auto px-4 py-4 flex justify-end">
+            <ThemeToggle />
+          </div>
+          <EventCheckInApp />
+        </div>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }

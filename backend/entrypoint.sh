@@ -1,22 +1,20 @@
 #!/bin/bash
 
-wait_for_mssqltools() {
-    echo "Waiting for database..."
+cd /app/backend/QuaveChallenge.API
+
+wait_for_db() {
+    echo "Waiting for database to be ready..."
     
-    while [ "$(docker ps -q -f name=mssqltools)" ]; do
-        echo "mssqltools is loading..."
+    # Use a more direct approach to check if the database is ready
+    until dotnet ef database update --no-build; do
+        echo "Database not ready yet, retrying in 5 seconds..."
         sleep 5
     done
     
-    echo "mssqltools has finished!"
+    echo "Database is ready!"
 }
 
-wait_for_mssqltools
-
-cd /app/backend/QuaveChallenge.API
-
-echo "Creating database and applying migrations..."
-dotnet ef database update
+wait_for_db
 
 echo "Starting application..."
 dotnet watch run --urls=http://0.0.0.0:5203

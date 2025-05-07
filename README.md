@@ -56,6 +56,26 @@ To seek available endpoints in API, please access [swagger](http://localhost:520
 
 ---
 
+## Real-time Communication
+
+The application implements real-time communication between the frontend and backend using SignalR:
+
+### Backend Implementation
+- The backend uses ASP.NET Core SignalR to broadcast changes when check-ins and check-outs occur
+- The SignalR hub is available at `http://localhost:5203/eventHub`
+- Events are transmitted with the following parameters:
+  - `eventType`: The type of event (e.g., "check-in", "check-out")
+  - `communityId`: The ID of the community where the event occurred
+  - `personId`: The ID of the person who was checked in/out
+
+### Frontend Implementation
+- The frontend uses the `@microsoft/signalr` package to connect to the backend
+- Real-time updates are processed through a state management system that:
+  1. Updates the React Query cache directly to avoid unnecessary network requests
+  2. Provides optimistic UI updates for immediate user feedback
+
+---
+
 ## Backend Initialization
 
 The backend uses `entrypoint.sh` to:
@@ -79,3 +99,4 @@ The database credentials are defined in `docker-compose-dev.yml`:
 
 - The frontend and backend each have their own `Dockerfile.dev` located in their respective folders.
 - The `dockersock` service is used to provide access to the host Docker socket (for scenarios where container introspection might be needed).
+- The SignalR implementation provides automatic reconnection with exponential backoff for reliable real-time updates.

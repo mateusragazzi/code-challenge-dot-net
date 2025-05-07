@@ -1,8 +1,23 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { formatDate } from '../../utils/formatters';
 
 function AttendeeRow({ person, onCheckIn, onCheckOut }) {
   const isCheckedIn = person.checkInDate && !person.checkOutDate;
+  const [showCheckOut, setShowCheckOut] = useState(false);
+  
+  useEffect(() => {
+    let timer;
+    if (person.checkInDate && !person.checkOutDate) {
+      setShowCheckOut(false);
+      timer = setTimeout(() => {
+        setShowCheckOut(true);
+      }, 5000);
+    }
+    
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [person.checkInDate, person.checkOutDate]);
   
   return (
     <tr className={isCheckedIn ? 'bg-blue-50 dark:bg-gray-900' : 'dark:bg-gray-800'}>
@@ -31,7 +46,7 @@ function AttendeeRow({ person, onCheckIn, onCheckOut }) {
           </button>
         )}
         
-        {person.checkInDate && !person.checkOutDate && (
+        {person.checkInDate && !person.checkOutDate && showCheckOut && (
           <button 
             onClick={() => onCheckOut(person.id)}
             className="w-full bg-orange-500 hover:bg-orange-600 text-white py-1 px-3 rounded text-sm transition-colors duration-200 disabled:bg-gray-400"

@@ -2,13 +2,26 @@ services:
   backend:
     build:
       context: ./backend
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     ports:
       - "5203:5203"
     depends_on:
       - sqlserver
+      - mssqltools
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - DOTNET_USE_POLLING_FILE_WATCHER=1
+      - DOTNET_WATCH_RESTART_ON_RUDE_EDIT=1
+    container_name: quave_backend
+    volumes_from:
+      - dockersock
+
+  dockersock:
+    image: alpine:latest
+    container_name: dockersock
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: /bin/sh -c "sleep infinity"
 
   frontend:
     build:
@@ -40,11 +53,15 @@ services:
 
   mssqltools:
     image: mcr.microsoft.com/mssql-tools
+    container_name: mssqltools
     depends_on:
       - sqlserver
     volumes:
       - ./db/init-db.sh:/tmp/init-db.sh
     command: /bin/bash ./tmp/init-db.sh
+    deploy:
+      restart_policy:
+        condition: none
 
 volumes:
   sqlserver_data:

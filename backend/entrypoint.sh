@@ -1,18 +1,22 @@
 #!/bin/bash
 
-# Esperar o banco de dados estar pronto
-echo "Waiting for database..."
-sleep 40
+wait_for_mssqltools() {
+    echo "Waiting for database..."
+    
+    while [ "$(docker ps -q -f name=mssqltools)" ]; do
+        echo "mssqltools is loading..."
+        sleep 5
+    done
+    
+    echo "mssqltools has finished!"
+}
 
-# Navegar para o diretório do projeto
+wait_for_mssqltools
+
 cd /app/backend/QuaveChallenge.API
 
-dotnet build
-
-# Forçar a criação do banco e aplicar as migrations
 echo "Creating database and applying migrations..."
 dotnet ef database update
 
-# Iniciar a aplicação
 echo "Starting application..."
-dotnet run 
+dotnet watch run --urls=http://0.0.0.0:5203

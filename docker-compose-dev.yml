@@ -59,9 +59,6 @@ services:
     volumes:
       - ./db/init-db.sh:/tmp/init-db.sh
     command: /bin/bash ./tmp/init-db.sh
-    deploy:
-      restart_policy:
-        condition: none
 
 volumes:
   sqlserver_data:
